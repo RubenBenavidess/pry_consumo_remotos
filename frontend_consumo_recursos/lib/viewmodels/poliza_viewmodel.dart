@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import '../models/poliza_model.dart';
 
-
 class PolizaViewModel extends ChangeNotifier {
   String propietario = '';
   double valorAlquiler = 0;

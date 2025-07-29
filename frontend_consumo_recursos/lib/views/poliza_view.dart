@@ -29,7 +29,10 @@ class _PolizaViewState extends State<PolizaView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Crear Póliza", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Crear Póliza',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.teal,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -43,9 +46,9 @@ class _PolizaViewState extends State<PolizaView> {
         },
         currentIndex: 0,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Inicio"),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: "Buscar"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Usuarios"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Usuarios'),
         ],
       ),
       body: SingleChildScrollView(
@@ -53,42 +56,78 @@ class _PolizaViewState extends State<PolizaView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInput("Propietario", _propietarioController, (val) {
-              vm.propietario = val;
-              vm.notifyListeners();
-            }),
+            _buildInput(
+              key: const Key('propietarioField'),
+              label: 'Propietario',
+              controller: _propietarioController,
+              onChanged: (val) {
+                vm.propietario = val;
+                vm.notifyListeners();
+              },
+            ),
             const SizedBox(height: 12),
-            _buildInput("Valor del seguro", _valorController, (val) {
-              final number = double.tryParse(val) ?? 0;
-              vm.valorSeguroAuto = number < 0 ? 0 : number;
-              if (number < 0) _valorController.text = '0';
-              vm.notifyListeners();
-            }, keyboard: TextInputType.number),
+            _buildInput(
+              key: const Key('valorField'),
+              label: 'Valor del seguro',
+              controller: _valorController,
+              keyboard: TextInputType.number,
+              onChanged: (val) {
+                final number = double.tryParse(val) ?? 0;
+                vm.valorAlquiler = number < 0 ? 0 : number;
+                if (number < 0) _valorController.text = '0';
+                vm.notifyListeners();
+              },
+            ),
             const SizedBox(height: 12),
-            Text("Modelo de auto:", style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Modelo de auto:',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             for (var m in ['A', 'B', 'C'])
-              _buildRadio("Modelo $m", m, vm.modeloAuto, (val) {
-                vm.modeloAuto = val!;
-                vm.notifyListeners();
-              }),
+              _buildRadio(
+                key: Key('modelo_$m'),
+                label: 'Modelo $m',
+                value: m,
+                groupValue: vm.modeloAuto,
+                onChanged: (val) {
+                  vm.modeloAuto = val!;
+                  vm.notifyListeners();
+                },
+              ),
             const SizedBox(height: 12),
-            Text("Edad propietario:", style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Edad propietario:',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             for (var e in ['18-23', '23-55', '55+'])
-              _buildRadio(_textoEdad(e), e, vm.edadPropietario, (val) {
-                vm.edadPropietario = val!;
-                vm.notifyListeners();
-              }),
+              _buildRadio(
+                key: Key('edad_$e'),
+                label: _textoEdad(e),
+                value: e,
+                groupValue: vm.edadPropietario,
+                onChanged: (val) {
+                  vm.edadPropietario = val!;
+                  vm.notifyListeners();
+                },
+              ),
             const SizedBox(height: 12),
-            _buildInput("Número de accidentes", _accidentesController, (val) {
-              final number = int.tryParse(val) ?? 0;
-              vm.accidentes = number < 0 ? 0 : number;
-              if (number < 0) _accidentesController.text = '0';
-              vm.notifyListeners();
-            }, keyboard: TextInputType.number),
+            _buildInput(
+              key: const Key('accidentesField'),
+              label: 'Número de accidentes',
+              controller: _accidentesController,
+              keyboard: TextInputType.number,
+              onChanged: (val) {
+                final number = int.tryParse(val) ?? 0;
+                vm.accidentes = number < 0 ? 0 : number;
+                if (number < 0) _accidentesController.text = '0';
+                vm.notifyListeners();
+              },
+            ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                key: const Key('calcularButton'),
                 style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -98,21 +137,32 @@ class _PolizaViewState extends State<PolizaView> {
                   await vm.calcularPoliza();
                   _limpiarCampos();
                 },
-                child: const Text("CREAR PÓLIZA",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                child: const Text(
+                  'CREAR PÓLIZA',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(height: 20),
             Row(
               children: [
                 const Text(
-                  "Costo total:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal),
+                  'Costo total:',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  "\$${vm.costoTotal.toStringAsFixed(2)}",
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+                  '\$${vm.costoTotal.toStringAsFixed(2)}',
+                  key: const Key('costoTotalText'),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),
@@ -122,9 +172,17 @@ class _PolizaViewState extends State<PolizaView> {
     );
   }
 
-  Widget _buildInput(String label, TextEditingController controller, Function(String) onChanged,
-      {TextInputType? keyboard}) {
+  // ---------- Helpers ----------
+
+  Widget _buildInput({
+    required String label,
+    required TextEditingController controller,
+    required Function(String) onChanged,
+    Key? key,
+    TextInputType? keyboard,
+  }) {
     return TextField(
+      key: key,
       controller: controller,
       keyboardType: keyboard,
       onChanged: onChanged,
@@ -132,14 +190,27 @@ class _PolizaViewState extends State<PolizaView> {
         labelText: label,
         filled: true,
         fillColor: Colors.grey.shade100,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 14,
+        ),
       ),
     );
   }
 
-  Widget _buildRadio(String label, String value, String groupValue, Function(String?) onChanged) {
+  Widget _buildRadio({
+    required String label,
+    required String value,
+    required String groupValue,
+    required Function(String?) onChanged,
+    Key? key,
+  }) {
     return RadioListTile(
+      key: key,
       title: Text(label),
       value: value,
       groupValue: groupValue,
@@ -148,16 +219,11 @@ class _PolizaViewState extends State<PolizaView> {
     );
   }
 
-  String _textoEdad(String rango) {
-    switch (rango) {
-      case '18-23':
-        return 'Mayor igual a 18 y menor a 23';
-      case '23-55':
-        return 'Mayor igual a 23 y menor a 55';
-      default:
-        return 'Mayor igual 55';
-    }
-  }
+  String _textoEdad(String rango) => switch (rango) {
+    '18-23' => 'Mayor igual a 18 y menor a 23',
+    '23-55' => 'Mayor igual a 23 y menor a 55',
+    _ => 'Mayor igual 55',
+  };
 
   void _limpiarCampos() {
     _propietarioController.clear();
