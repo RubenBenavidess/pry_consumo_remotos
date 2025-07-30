@@ -4,6 +4,7 @@ import '../viewmodels/poliza_viewmodel.dart';
 import 'usuarios_view.dart';
 
 class PolizaView extends StatefulWidget {
+  static const routeName = '/poliza';
   const PolizaView({super.key});
 
   @override
