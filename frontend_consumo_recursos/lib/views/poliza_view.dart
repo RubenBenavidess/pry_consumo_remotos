@@ -61,7 +61,7 @@ class _PolizaViewState extends State<PolizaView> {
             const SizedBox(height: 12),
             _buildInput("Valor del seguro", _valorController, (val) {
               final number = double.tryParse(val) ?? 0;
-              vm.valorSeguroAuto = number < 0 ? 0 : number;
+              vm.valorAlquiler = number < 0 ? 0 : number;
               if (number < 0) _valorController.text = '0';
               vm.notifyListeners();
             }, keyboard: TextInputType.number),
