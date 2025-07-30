@@ -18,7 +18,6 @@ class FakeLoginViewModel extends ChangeNotifier {
 class FakePolizaViewModel extends PolizaViewModel {
   @override
   Future<void> calcularPoliza() async {
-    // cálculo local simple
     costoTotal =
         valorAlquiler * 0.05 +
         (modeloAuto == 'A'
