@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
-import '../lib/viewmodels/poliza_viewmodel.dart';
+import 'package:frontend_consumo_recursos/viewmodels/poliza_viewmodel.dart';
+import 'package:frontend_consumo_recursos/viewmodels/login_viewmodel.dart';
 
-class FakeLoginViewModel extends ChangeNotifier {
-  String? _user;
-  bool login(String user, String pass) {
-    if (user == 'demo' && pass == '1234') {
-      _user = user;
+class FakeLoginViewModel extends LoginViewModel {
+  @override
+  Future<bool> login() async {
+    if (username == 'demo' && password == '1234') {
+      isAuthenticated = true;
       notifyListeners();
       return true;
     }
+    errorMessage = 'Credenciales inválidas';
+    notifyListeners();
     return false;
   }
-
-  bool get isLoggedIn => _user != null;
 }
 
 class FakePolizaViewModel extends PolizaViewModel {
   @override
   Future<void> calcularPoliza() async {
+    // Asegurarse de que tenemos valores válidos
+    if (valorAlquiler == 0) return;
+
     costoTotal =
         valorAlquiler * 0.05 +
         (modeloAuto == 'A'
@@ -31,6 +35,7 @@ class FakePolizaViewModel extends PolizaViewModel {
             ? 75
             : 120) +
         accidentes * 50;
+
     await Future.delayed(const Duration(milliseconds: 200)); // simular red
     notifyListeners();
   }
